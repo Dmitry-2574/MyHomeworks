@@ -1,5 +1,5 @@
 
-
+# Четвертая домашка пайтона
 text = input("Введите текст: ")
 shift = int(input("Введите сдвиг: "))
 encrypted_text = ""
