@@ -21,3 +21,13 @@ append_csv([["Jane Doe", "25", "London"]], "test.csv")
 read_data_csv_append = read_csv("test.csv")
 print(f"CSV appended: {read_data_csv_append}")
 
+# TXT
+data_txt = "Hello, world!"
+write_txt(data_txt, "test.txt")
+read_data_txt = read_txt("test.txt")
+print(f"TXT read: {read_data_txt}")
+
+append_txt("\nThis is an appended line.", "test.txt")
+read_data_txt_append = read_txt("test.txt")
+print(f"TXT appended: {read_data_txt_append}")
+
