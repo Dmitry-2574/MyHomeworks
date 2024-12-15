@@ -21,10 +21,13 @@ def append_json(data: list[dict], file_path: str, encoding: str = "utf-8"):
     try:
         with open(file_path, 'r', encoding=encoding) as file:
             existing_data = json.load(file)
-    except FileNotFoundError:
+            if not isinstance(existing_data, list):
+                existing_data = [existing_data]
+    except (FileNotFoundError, json.JSONDecodeError):
         existing_data = []
     existing_data.extend(data)
-    write_json(existing_data, file_path, encoding)
+    with open(file_path, 'w') as file:
+        json.dump(existing_data, file, indent=4)
 
 # Функция для чтения CSV файла
 
