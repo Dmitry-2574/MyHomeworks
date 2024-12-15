@@ -13,7 +13,7 @@ def read_json(file_path: str, encoding: str="utf-8"):
 def write_json(data, file_path: str, encoding: str = "utf-8"):
     """Записываем данные в JSON-файл"""
     with open(file_path, 'w', encoding=encoding) as file:
-        json.dump(data, file, indent=4)
+        json.dump(data, file, indent=4, ensure_ascii=False)
 
 # Функция для добавления JSON объекта в конец файла
 def append_json(data: list[dict], file_path: str, encoding: str = "utf-8"):
@@ -27,7 +27,7 @@ def append_json(data: list[dict], file_path: str, encoding: str = "utf-8"):
         existing_data = []
     existing_data.extend(data)
     with open(file_path, 'w') as file:
-        json.dump(existing_data, file, indent=4)
+        json.dump(existing_data, file, indent=4, ensure_ascii=False)
 
 # Функция для чтения CSV файла
 
