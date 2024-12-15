@@ -50,7 +50,24 @@ def append_csv(data, file_path, delimiter=';', encoding: str ='windows-1251'):
         writer = csv.writer(file, delimiter=delimiter)
         writer.writerows(data)
 
+# Функция для чтения txt файла
 
+def read_txt(file_path, encoding: str = "utf-8"):
+    """Читает данные из текстового файла."""
+    with open(file_path, 'r', encoding=encoding) as file:
+        return file.read()
+
+# Функция для записи txt файла
+def write_txt(data, file_path, encoding: str = "utf-8"):
+    """Записывает данные в текстовый файл."""
+    with open(file_path, 'w', encoding=encoding) as file:
+        file.write(data)
+
+# Функция для добавления txt в  файл
+def append_txt(data, file_path, encoding: str = "utf-8"):
+    """Добавляет данные в конец текстового файла."""
+    with open(file_path, 'a', encoding=encoding) as file:
+        file.write(data)
 
 
 
