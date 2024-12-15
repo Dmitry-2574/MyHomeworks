@@ -31,3 +31,10 @@ append_txt("\nThis is an appended line.", "test.txt")
 read_data_txt_append = read_txt("test.txt")
 print(f"TXT appended: {read_data_txt_append}")
 
+# YAML
+data_yaml = {"name": "John Doe", "age": 30, "city": "New York"}
+with open('test.yaml', 'w') as file:
+    yaml.dump(data_yaml, file)
+
+read_data_yaml = read_yaml("test.yaml")
+print(f"YAML read: {read_data_yaml}")
