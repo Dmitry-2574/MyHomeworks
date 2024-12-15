@@ -31,26 +31,29 @@ def append_json(data: list[dict], file_path: str, encoding: str = "utf-8"):
 
 # Функция для чтения CSV файла
 
-def read_csv(data, file_path, delimiter=';', encoding: str ='windows-1251'):
+def read_csv(file_path, delimiter=';', encoding: str ='windows-1251'):
     """Читаем данные из CSV-файла"""
-    with open(file_path, 'w', encoding=encoding, newline='') as file:
-        writer = csv.writer(file, delimiter=delimiter)
-        writer.writerows(data)
-
+    data = []
+    with open(file_path, 'r', encoding=encoding, newline='') as csvfile:
+            reader = csv.reader(csvfile, delimiter=delimiter)
+            for row in reader:
+                data.append(row)
+    return data
+    
 # Функция для записи CSV файла
 
 def write_csv(data, file_path, delimiter=';', encoding: str ='windows-1251'):
     """Записываем данные в CSV-файл"""
-    with open(file_path, 'w', encoding=encoding, newline='') as file:
-        writer = csv.writer(file, delimiter=delimiter)
+    with open(file_path, 'w', encoding=encoding, newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=delimiter)
         writer.writerows(data)
 
 # Функция для добавления CSV в существующей файл
 
 def append_csv(data, file_path, delimiter=';', encoding: str ='windows-1251'):
     """Добавляет данные в существующий CSV-файл."""
-    with open(file_path, 'a', encoding=encoding, newline='') as file:
-        writer = csv.writer(file, delimiter=delimiter)
+    with open(file_path, 'a', encoding=encoding, newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=delimiter)
         writer.writerows(data)
 
 # Функция для чтения txt файла
