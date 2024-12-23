@@ -11,16 +11,16 @@ print(f"Обработанный список: {numbers}")
 
 # 3. Используйте `filter`, чтобы создать словарь, содержащий исходные `id` и другие ключи, но только для тех фильмов, `id` которых присутствуют в списке, полученном на предыдущем шаге.
 filtered_movies = dict(filter(lambda item: item[0] in numbers and item[0] is not None, full_dict.items()))
-# pprint(filtered_movies)
+pprint(filtered_movies)
 
 # 4. Создайте множество с помощью `set comprehension`, собрав уникальные значения ключа `director` из словаря.
 unique_directors = {movie["director"] for movie in full_dict.values() if "director" in movie}
-# pprint(f'Уникальные режиссеры: {unique_directors}')
+pprint(f'Уникальные режиссеры: {unique_directors}')
 
 # 5. С помощью `dict comprehension` создайте копию исходного словаря `full_dict`, преобразовав каждое значение `'year'` в строку.
 
 copied_dict = {key: {k: (str(v) if k == 'year' else v) for k, v in value.items()} for key, value in full_dict.items() if isinstance(value, dict)}
-# pprint(f'Копия словаря: {copied_dict}')
+pprint(f'Копия словаря: {copied_dict}')
 
 # 6. Используйте `filter`, чтобы получить словарь, содержащий только те фильмы, которые начинаются на букву `Ч`.
 # Для  решения п.6,  нужно добавить проверку на None  внутри функции safe_get,  и также обработать случай, когда item[1] может быть  не словарем.
