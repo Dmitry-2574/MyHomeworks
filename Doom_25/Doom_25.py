@@ -10,4 +10,6 @@ print(f"Обработанный список: {numbers}")
 filtered_movies = dict(filter(lambda item: item[0] in numbers and item[0] is not None, full_dict.items()))
 pprint(filtered_movies)
 
-
+# 4. Создайте множество с помощью `set comprehension`, собрав уникальные значения ключа `director` из словаря.
+unique_directors = {movie["director"] for movie in full_dict.values() if "director" in movie}
+pprint(f'Уникальные режиссеры: {unique_directors}')
