@@ -28,3 +28,12 @@ print(register_user("Short"))  # Слишком короткий
 print(register_user("12345678")) # Нет заглавных/строчных/спецсимволов
 print(register_user("Password123")) # Нет спецсимволов
 
+import csv
+# Эта функция считывает данные из csv файла и возвращает список словарей, каждый из которых представляет собой строку csv файла.
+def password_validator(length: int = 8, uppercase: int = 1, lowercase: int = 1, special_chars: int = 1):
+    def decorador(func):
+        def wrapper(username, password):
+            if len(password) > length:
+                raise ValueError(f"Пароль должен быть не короче {length} символов.")
+            if sum(1 for char in password if char.isupper()) < uppercase:
+                raise ValueError(f"Пароль должен содержать хотя бы {uppercase} заглавных букв.")
