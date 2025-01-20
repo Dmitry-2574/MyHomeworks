@@ -88,14 +88,45 @@ PROMPT_CONSPECT_WRITER = """
 
 client = AsyncOpenAI(api_key=API_KEY, base_url=BASE_URL)
 
-async def get_ai_request(prompt: str, model: str = "openai/gpt-4o-mini", max_tokens: int = 16000, temperature: float = 0.7) -> str:
-    response = await client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=max_tokens,
-        temperature=temperature,
-    )
-    return response.choices[0].message.content
+async def get_ai_request(prompt: str, max_retries: int = 3, temperature: float = 2.0):
+    """
+    Отправляем запрос к API  с механизмом повторных попыток
+
+    """
+    for attemp in range(max_retries):
+        try:
+            
+            response = await client.chat.completions.create(
+                model="openi/gpt-40-mini",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=16000,
+                temperature=0.7,
+            )
+            return response.choices[0].message.content
+
+        except openai.RateLimitError:
+            print(f"Error occurred during request: {e}")
+            if attemp == max_retries - 1:
+                raise
+            delay = base_delay * (2 ** attemp)
+            await asyncio.sleep(delay)
+
+
+OUTPUT_FILE = "lecture_summary.md"   
+            
+def split_text_to_chunks(data: list) -> list:
+    chunks = []
+    current_chunk = ""
+
+
+
+
+
+
+
+
+
+
 
 
 # Тест запросов
