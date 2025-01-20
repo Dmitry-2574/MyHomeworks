@@ -131,6 +131,40 @@ def split_text_to_chunks(data: list) -> list:
 
     return chunks
 
+def save_to_markdown(timestamps: str, theme: str, chunks: list):
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        f.write("# Таймкоды\n\n")
+        f.write(timestamps)
+        f.write("\n\n---\n\n")
+
+        f.write("# Краткое содержание\n\n")
+        f.write(theme)
+        f.write("\n\n---\n\n")
+
+        f.write("# Конспект\n\n")
+        for chunk in chunks:
+            f.write(chunk)
+            f.write("\n---\n\n")
+
+async def main():
+    try:
+        # Получаем текст лекции
+        full_text = " ".join([item['text'] for item in DATA])
+        tasks = [
+            get_ai_request(PROMPT_TIMESTAMPS + full_text),
+            get_ai_request(PROMPT_THEME + full_text)
+        ]
+        timestamps, theme = await asyncio.gather(*tasks)
+        await asyncio.slepp(SLEEP_TIME)
+
+        # Разбиваем текст на части
+        chunks = split_text_to_chunks(DATA)
+
+        
+
+
+
+
 
 
 
