@@ -151,7 +151,7 @@ async def main():
         # Получаем текст лекции
         full_text = " ".join([item['text'] for item in DATA])
         tasks = [
-            get_ai_request(PROMPT_TIMESTAMPS + full_text),
+            # get_ai_request(PROMPT_TIMESTAMPS + full_text), 
             get_ai_request(PROMPT_THEME + full_text)
         ]
         timestamps, theme = await asyncio.gather(*tasks)
@@ -160,7 +160,27 @@ async def main():
         # Разбиваем текст на части
         chunks = split_text_to_chunks(DATA)
 
+        chunks_result = []
+        for chunk in chunks:
+            prompt = PROMPT_CONSPECT_WRITER.format(
+                topic = theme,
+                full_text = full_text,
+                text_to_work = chunk,
+            )
+            result = await get_ai_request(prompt)
+            chunks_result.append(result)
+            await asyncio.sleep(SLEEP_TIME)
+
+        # Сохраняем результаты в Markdown
+        save_to_markdown(timestamps, theme, chunks_result)
         
+    except Exception as e:
+        print(f"Произошла ошибка: {e}")
+        raise
+
+if_name_== "_main_":
+    asyncio.run(main())
+
 
 
 
