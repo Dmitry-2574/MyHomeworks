@@ -117,6 +117,19 @@ OUTPUT_FILE = "lecture_summary.md"
 def split_text_to_chunks(data: list) -> list:
     chunks = []
     current_chunk = ""
+    for item in data:
+        text = item['text']
+        if len(current_chunk) + len(text) <= MAX_CHUNK_SIZE:
+            current_chunk += text
+        else:
+            if current_chunk:
+                chunks.append(current_chunk)
+            current_chunk = text
+
+    if current_chunk:
+        chunks.append(current_chunk)
+
+    return chunks
 
 
 
