@@ -2,10 +2,13 @@
 import asyncio
 from openai import AsyncOpenAI # pip install openai
 
+from hw_27_data import DATA
+
 API_KEY = "sk-or-vv-32acad84830483432df6bb1eb3114ede486fe620ba237c07f152b84c6a27e782"
 BASE_URL = "https://api.vsegpt.ru/v1"
 MAX_CHUNK_SIZE = 5000 # Максимальная длина текста для 1 запроса к API
-SLEEP_TIME = 1 # Задержка между запросами
+SLEEP_TIME = 4 # Задержка между запросами
+OUTPUT_FILE = "lectrue_summary.md"
 PROMPT_THEME = """
 Привет!
 
@@ -87,17 +90,18 @@ PROMPT_CONSPECT_WRITER = """
 """
 
 client = AsyncOpenAI(api_key=API_KEY, base_url=BASE_URL)
+base_delay = 1
 
 async def get_ai_request(prompt: str, max_retries: int = 3, temperature: float = 2.0):
     """
     Отправляем запрос к API  с механизмом повторных попыток
 
     """
-    for attemp in range(max_retries):
+    for attempt in range(max_retries):
         try:
             
             response = await client.chat.completions.create(
-                model="openi/gpt-40-mini",
+                model="openai/gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=16000,
                 temperature=0.7,
@@ -105,10 +109,9 @@ async def get_ai_request(prompt: str, max_retries: int = 3, temperature: float =
             return response.choices[0].message.content
 
         except openai.RateLimitError:
-            print(f"Error occurred during request: {e}")
-            if attemp == max_retries - 1:
-                raise
-            delay = base_delay * (2 ** attemp)
+            if attempt == max_retries - 1:
+                raise 
+            delay = base_delay ** (2 * attempt)
             await asyncio.sleep(delay)
 
 
@@ -151,16 +154,16 @@ async def main():
         # Получаем текст лекции
         full_text = " ".join([item['text'] for item in DATA])
         tasks = [
-            # get_ai_request(PROMPT_TIMESTAMPS + full_text), 
+            get_ai_request(PROMPT_TIMESTAMPS + full_text), 
             get_ai_request(PROMPT_THEME + full_text)
         ]
         timestamps, theme = await asyncio.gather(*tasks)
-        await asyncio.slepp(SLEEP_TIME)
+        await asyncio.sleep(SLEEP_TIME)
 
         # Разбиваем текст на части
         chunks = split_text_to_chunks(DATA)
 
-        chunks_result = []
+        chunks_results = []
         for chunk in chunks:
             prompt = PROMPT_CONSPECT_WRITER.format(
                 topic = theme,
@@ -168,17 +171,16 @@ async def main():
                 text_to_work = chunk,
             )
             result = await get_ai_request(prompt)
-            chunks_result.append(result)
+            chunks_results.append(result)
             await asyncio.sleep(SLEEP_TIME)
 
         # Сохраняем результаты в Markdown
-        save_to_markdown(timestamps, theme, chunks_result)
+        save_to_markdown(timestamps, theme, chunks_results)
         
     except Exception as e:
         print(f"Произошла ошибка: {e}")
         raise
-
-if_name_== "_main_":
+if __name__ == "__main__":
     asyncio.run(main())
 
 
@@ -196,61 +198,3 @@ if_name_== "_main_":
 
 
 
-# Тест запросов
-async def main():
-    prompt_cow = "Как кричит корова?"
-    prompt_cat = "Как кричит кошка?"
-    prompt_monkey = "Как кричит обезьяна?"
-
-    prompts = [prompt_cow, prompt_cat, prompt_monkey]
-    results = await asyncio.gather(*[get_ai_request(prompt) for prompt in prompts])
-
-    print(results)
-
-
-asyncio.run(main())
-
-"""
-['Корова кричит "му".', 'Кошка обычно издает звуки, которые можно описать как "мяу". В зависимости от настроения и ситуации, кошка может мяукать по-разному: мягко, настойчиво, громко или тихо. Кроме того, кошки могут издавать и другие звуки, такие как шипение, ворчание или урчание.', 'Обезьяны издают множество звуков, чтобы общаться друг с другом, включая крики, крики, визги и другие звуки. Например, некоторые виды обезьян могут издавать громкие крики, которые могут звучать как "уа-уа" или "га-га". Каждый вид имеет свои особенности звучания, поэтому точное "крик" может варьироваться.']
-"""
-```
-
-
-## Пример выходных данных
-
-00:00:00 -  Обзор сетки Bootstrap: как блоки располагаются на разных размерах экрана.
-00:01:13 -  Контейнеры в Bootstrap: фиксированные и резиновые, их свойства и различия.
-00:04:20 -  Сетка Bootstrap: класс row, колонки и их автоматическое позиционирование.
-00:08:50 -  Опции сетки: префиксы размеров, управление колонками и вложенность.
-00:11:27 -  Настройка ширины колонок: использование call с цифрами и автоматическое распределение.
-00:13:11 -  Комбинирование классов: call, call-lg, call-md-auto для адаптивной верстки.
-00:23:54 -  Gatters: добавление отступов на контейнеры и ряды.
-00:25:36 -  Порядок элементов: использование order и изменение порядка на разных экранах.
-00:30:39 -  Утилиты: скрытие и отображение элементов на разных размерах экрана.
-
-А так же описание темы занятия + файл с конспектом!
-## Пример входных данных
-
-```python
-DATA = [
-    {
-        "timestamp": [
-            0.0,
-            27.7
-        ],
-        "text": " Разберемся, как работает сетка Bootstrap. Сетка Bootstrap позволяет делать многие вещи достаточно гибко. Мы можем сразу заглянуть в Bootstrap примеры и, допустим, на примере вот этой истории посмотреть, что на с каких-то других размеров, эти блоки располагаются просто друг подружкой."
-    },
-    {
-        "timestamp": [
-            28.58,
-            34.78
-        ],
-        "text": " И сделано это в данном случае просто за счет использования сетки Bootstrap, то есть уже готовых для нас классов."
-    },
-    {
-        "timestamp": [
-            35.12,
-            40.24
-        ],
-        "text": " В этих примерах используется только Bootstrap стиле, ничего более дополнительного нет."
-    }............. # ПОЛНЫЙ НАБОР БУДЕТ В ОТДЕЛЬНОМ ФАЙЛЕ
